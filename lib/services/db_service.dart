@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import '../models/task_model.dart';
+import 'kv_storage.dart';
 
 /// DbService provides a simple sqflite-backed DB for mobile and a
 /// lightweight in-memory fallback for web so auth (signup/login)
@@ -109,9 +112,9 @@ class DbService {
   // User methods
   Future<bool> registerUser(String email, String password) async {
     if (kIsWeb) {
-      // fast in-memory registration on web
       if (_webUsers.containsKey(email)) return false;
       _webUsers[email] = password;
+      _saveWebData();
       return true;
     }
 
@@ -162,6 +165,7 @@ class DbService {
     if (kIsWeb) {
       try {
         _webTasks.add(Task(id: id, title: title, description: description, status: status, dueDate: dueDate));
+        _saveWebData();
         return true;
       } catch (e) {
         return false;
@@ -188,6 +192,7 @@ class DbService {
       final idx = _webTasks.indexWhere((t) => t.id == id);
       if (idx == -1) return false;
       _webTasks[idx] = Task(id: id, title: title, description: description, status: status, dueDate: dueDate);
+      _saveWebData();
       return true;
     }
 
