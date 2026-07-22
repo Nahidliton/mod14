@@ -26,6 +26,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
     final response = await _apiService.register(
       _emailController.text.trim(),
       _passController.text.trim(),
+      _firstNameController.text.trim(),
+      _lastNameController.text.trim(),
+      _mobileController.text.trim(),
     );
     if (!mounted) return;
     setState(() => _isLoading = false);
