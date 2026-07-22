@@ -1,10 +1,8 @@
-import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import '../models/task_model.dart';
-import 'kv_storage.dart';
 
 /// DbService provides a simple sqflite-backed DB for mobile and a
 /// lightweight in-memory fallback for web so auth (signup/login)
@@ -221,6 +219,10 @@ class DbService {
     final db = await database;
     final count = await db.delete('tasks', where: 'id = ?', whereArgs: [id]);
     return count > 0;
+  }
+
+  void _saveWebData() {
+    // Web fallback is in-memory only. Nothing to persist.
   }
 
   Future<void> close() async {

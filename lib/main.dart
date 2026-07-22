@@ -1,6 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 export 'package:provider/provider.dart';
+import 'services/sqflite_init.dart';
 import 'screens/auth/splash_screen.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/auth/sign_up_screen.dart';
@@ -9,6 +11,18 @@ import 'screens/main/home_screen.dart'; // Assuming you have this from the previ
 import 'providers/task_provider.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  final isDesktop = !kIsWeb && (
+    defaultTargetPlatform == TargetPlatform.windows ||
+    defaultTargetPlatform == TargetPlatform.linux ||
+    defaultTargetPlatform == TargetPlatform.macOS
+  );
+
+  if (isDesktop) {
+    initSqfliteFfi();
+  }
+
   runApp(MyApp());
 }
 
