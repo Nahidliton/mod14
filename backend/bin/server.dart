@@ -240,7 +240,7 @@ void main() async {
       final response = await innerHandler(request);
       return response.change(headers: {...response.headers, ..._corsHeaders});
     };
-  }).addHandler(router);
+  }).addHandler(router.call);
 
   const port = 8080;
   await io.serve(handler, '0.0.0.0', port);

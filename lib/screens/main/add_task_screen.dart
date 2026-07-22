@@ -16,6 +16,8 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   final _descriptionController = TextEditingController();
   bool _isLoading = false;
   final _formKey = GlobalKey<FormState>();
+  late String _selectedStatus;
+  late String _initialStatus;
 
   @override
   void initState() {
@@ -23,6 +25,11 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     if (widget.task != null) {
       _assignToController.text = widget.task!.title;
       _descriptionController.text = widget.task!.description;
+      _selectedStatus = widget.task!.status;
+      _initialStatus = widget.task!.status;
+    } else {
+      _selectedStatus = 'pending';
+      _initialStatus = 'pending';
     }
   }
 
@@ -44,7 +51,10 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
             children: [
               Text(
                 isEdit ? 'Edit Task' : 'Add New Task',
-                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               const SizedBox(height: 24),
               const Text('Title', style: TextStyle(color: Colors.grey)),
@@ -89,6 +99,26 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                     ? 'Please enter a description'
                     : null,
               ),
+              const SizedBox(height: 24),
+              const Text('Status', style: TextStyle(color: Colors.grey)),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  _buildStatusOption('pending', 'Pending'),
+                  _buildStatusOption('in_progress', 'In Progress'),
+                  _buildStatusOption('completed', 'Complete'),
+                  TextButton(
+                    onPressed: () {
+                      setState(() {
+                        _selectedStatus = _initialStatus;
+                      });
+                    },
+                    child: const Text('Cancel'),
+                  ),
+                ],
+              ),
               const SizedBox(height: 32),
               SizedBox(
                 width: double.infinity,
@@ -96,6 +126,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF00C853),
+                    foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -110,19 +141,12 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                             strokeWidth: 2.5,
                           ),
                         )
-                      : Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(isEdit ? Icons.save : Icons.add, color: Colors.white),
-                            const SizedBox(width: 10),
-                            Text(
-                              isEdit ? 'Save Changes' : 'Add Task',
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
+                      : Text(
+                          isEdit ? 'Save' : 'Add Task',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                 ),
               ),
@@ -130,6 +154,22 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildStatusOption(String value, String label) {
+    final selected = _selectedStatus == value;
+    return ChoiceChip(
+      label: Text(label),
+      selected: selected,
+      onSelected: (_) {
+        setState(() {
+          _selectedStatus = value;
+        });
+      },
+      selectedColor: const Color(0xFF00C853),
+      backgroundColor: Colors.grey[200],
+      labelStyle: TextStyle(color: selected ? Colors.white : Colors.black87),
     );
   }
 
@@ -142,13 +182,13 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
 
     bool success = false;
     if (widget.task == null) {
-      success = await provider.createTask(title, description);
+      success = await provider.createTask(title, description, _selectedStatus);
     } else {
       final updated = Task(
         id: widget.task!.id,
         title: title,
         description: description,
-        status: widget.task!.status,
+        status: _selectedStatus,
         dueDate: widget.task!.dueDate,
       );
       success = await provider.updateTask(updated);

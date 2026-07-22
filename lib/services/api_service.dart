@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 import '../models/task_model.dart';
@@ -148,11 +147,7 @@ class ApiService {
       }
     }
 
-    if (!kIsWeb) {
-      return await _db.getCurrentUserProfile();
-    }
-
-    return null;
+    return await _db.getCurrentUserProfile();
   }
 
   Future<bool> updateProfile(

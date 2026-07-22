@@ -34,7 +34,12 @@ class TaskProvider with ChangeNotifier {
     }
   }
 
-  Future<bool> createTask(String title, String description) async {
+  Future<bool> createTask(
+    String title,
+    String description, [
+    String status = 'pending',
+  ]) async {
+    // ApiService.addTask expects only title and description
     bool success = await _apiService.addTask(title, description);
     if (success) {
       await fetchTasks(); // Refresh list
