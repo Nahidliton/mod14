@@ -1,0 +1,12 @@
+name: task_manager_backend
+description: A simple local backend for auth and shared credentials.
+publish_to: 'none'
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  shelf: ^1.4.2
+  shelf_router: ^1.0.0
+  sqlite3: ^2.4.0
+  path: ^1.8.4
+  crypto: ^3.0.0

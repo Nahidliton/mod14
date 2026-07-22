@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async'; // Import for Timer
 
-import '../../services/db_service.dart';
+import '../../services/api_service.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -16,7 +16,7 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     // Use Timer instead of Future.delayed for better web compatibility
     Timer(const Duration(seconds: 2), () async {
-      final profile = await DbService().getCurrentUserProfile();
+      final profile = await ApiService().getProfile();
       if (!mounted) return;
       final nextRoute = profile != null ? '/home' : '/login';
       Navigator.pushReplacementNamed(context, nextRoute);
